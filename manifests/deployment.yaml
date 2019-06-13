@@ -6,7 +6,6 @@ spec:
   selector:
       matchLabels:
         app: captureorder
-  replicas: 2
   template:
       metadata:
         labels:
@@ -14,7 +13,7 @@ spec:
       spec:
         containers:
         - name: captureorder
-          image: uniqueacrname.azurecr.io/captureorder # replace with your own repository
+          image: nscully0registry.azurecr.io/captureorder:ca1
           imagePullPolicy: Always
           readinessProbe:
             httpGet:
@@ -26,28 +25,30 @@ spec:
               path: /healthz
           resources:
             requests:
-              memory: "64Mi"
+              memory: "128Mi"
               cpu: "100m"
             limits:
-              memory: "128Mi"
+              memory: "256Mi"
               cpu: "500m"
           env:
           - name: TEAMNAME
-            value: 'placeholder' # will be patched at deployment time by value of 'teamName' in the variable group
+            value: "placeholder"
+          - name: CHALLENGEAPPINSIGHTS_KEY
+            value: "bb405433-593b-455a-871f-ed5d6a5be13e"
           - name: MONGOHOST
             valueFrom:
-              secretKeyRef:
-                name: mongodb
-                key: mongoHost
+                secretKeyRef:
+                        name: mongodb
+                        key: mongoHost
           - name: MONGOUSER
             valueFrom:
-              secretKeyRef:
-                name: mongodb
-                key: mongoUser
+                secretKeyRef:
+                        name: mongodb
+                        key: mongoUser
           - name: MONGOPASSWORD
             valueFrom:
-              secretKeyRef:
-                name: mongodb
-                key: mongoPassword
+                secretKeyRef:
+                        name: mongodb
+                        key: mongoPassword
           ports:
-          - containerPort: 80
+          - containerPort: 8080
